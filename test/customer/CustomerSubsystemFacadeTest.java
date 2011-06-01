@@ -1,4 +1,4 @@
-package customer.test.junit;
+package customer;
 
 import java.util.List;
 

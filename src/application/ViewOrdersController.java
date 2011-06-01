@@ -20,8 +20,12 @@ import business.externalinterfaces.CustomerConstants;
 import business.externalinterfaces.ICustomerProfile;
 import business.externalinterfaces.ICustomerSubsystem;
 import business.externalinterfaces.IOrder;
+import business.externalinterfaces.IOrderItem;
 import business.externalinterfaces.IOrderSubsystem;
+import business.externalinterfaces.IProductFromDb;
+import business.externalinterfaces.IProductSubsystem;
 import business.ordersubsystem.OrderSubsystemFacade;
+import business.productsubsystem.ProductSubsystemFacade;
 
 /**
  * @author pcorazza
@@ -52,11 +56,46 @@ public enum ViewOrdersController implements CleanupControl {
 				// now get customer from SessionContext, getOrderHistory
 				// and then read the appropriate order from the history, using
 				// order id
+				ICustomerSubsystem customerSs = (ICustomerSubsystem) SessionContext.INSTANCE
+						.get(CustomerConstants.CUSTOMER);
+				ICustomerProfile customerProfile = customerSs
+						.getCustomerProfile();
+				IOrderSubsystem orderSs = new OrderSubsystemFacade(
+						customerProfile);
 
-				// default implementation
-				selectOrderWindow.setVisible(false);
-				viewOrderDetailsWindow = new ViewOrderDetailsWindow();
-				viewOrderDetailsWindow.setVisible(true);
+				try {
+					List<IOrder> orders = orderSs.getOrderHistory();
+					IOrder selectedOrder = null;
+					for (IOrder ord : orders) {
+						if (ord.getOrderId().equals(selOrderId)) {
+							selectedOrder = ord;
+							break;
+						}
+					}
+					List<IOrderItem> orderItems = selectedOrder.getOrderItems();
+					List<String[]> orderItemsAsString = new ArrayList<String[]>();
+					for (IOrderItem orderItem : orderItems) {
+						String productId = orderItem.getProductid();
+						IProductSubsystem pss = new ProductSubsystemFacade();
+						IProductFromDb product = pss
+								.getProductFromId(productId);
+						String productName = product.getProductName();
+						String unitPrice = product.getUnitPrice();
+						String quantity = orderItem.getQuantity();
+						String totalPrice = orderItem.getTotalPrice();
+						orderItemsAsString.add(new String[] { productName,
+								unitPrice, quantity, totalPrice });
+					}
+
+					selectOrderWindow.setVisible(false);
+					viewOrderDetailsWindow = new ViewOrderDetailsWindow();
+					viewOrderDetailsWindow.updateModel(orderItemsAsString);
+					viewOrderDetailsWindow.setVisible(true);
+				} catch (DatabaseException e) {
+					JOptionPane.showMessageDialog(selectOrderWindow,
+							"Database connection error", ERROR,
+							JOptionPane.ERROR_MESSAGE);
+				}
 
 			} else {
 				JOptionPane.showMessageDialog(selectOrderWindow, ERROR_MESSAGE,
