@@ -196,7 +196,7 @@ public class MaintainProductCatalog extends JWindow implements ParentWindow, ICo
 			e.printStackTrace();
 		}
 		for(String[] s:catalogs){
-			catalogTypeCombo.addItem(s[1]);
+			catalogTypeCombo.addItem(s[0]);
 		}
 		//catalogTypeCombo.addActionListener(new ComboBoxListener());
 		Action comboAction = control.getComboAction(this);

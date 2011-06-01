@@ -228,7 +228,7 @@ public class AddEditProduct extends JDialog implements ParentWindow, IComboObser
 			e.printStackTrace();
 		}
 		for(String[] s:catalogs){
-			catalogGroupField.addItem(s[1]);
+			catalogGroupField.addItem(s[0]);
 		}
 		//catalogGroupField.addItem(DefaultData.BOOKS);
 		//catalogGroupField.addItem(DefaultData.CLOTHES);

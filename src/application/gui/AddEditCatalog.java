@@ -83,6 +83,9 @@ public class AddEditCatalog extends JDialog implements ParentWindow {
 	 * means it's for editing.
 	 * @param catalogGroup - catalogGroup is "Books" or "Clothes"
 	 */
+	
+	
+	
 	public AddEditCatalog(String addOrEdit, String catalogGroup) {
 		control = ManageProductsController.INSTANCE;
 	    control.setAddEditCatalog(this);		
@@ -94,6 +97,10 @@ public class AddEditCatalog extends JDialog implements ParentWindow {
 		getContentPane().add(mainPanel);
 			
 	}
+	public String getAddOrEdit() {
+		return addOrEdit;
+	}
+	
 	private void handleWindowClosing() {
         addWindowListener( new WindowAdapter() {
             public void windowClosing(WindowEvent w) {

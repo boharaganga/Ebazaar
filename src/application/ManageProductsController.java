@@ -280,6 +280,7 @@ public enum ManageProductsController implements CleanupControl  {
 	// control AddEditCatalog
 	class SaveAddEditCatListener implements ActionListener {
         public void actionPerformed(ActionEvent evt) {
+        	System.out.println(addEditCatalog.getAddOrEdit());
         	String name = addEditCatalog.getProductNameField().getText();
         	
    	//TODO get the product ID from the event

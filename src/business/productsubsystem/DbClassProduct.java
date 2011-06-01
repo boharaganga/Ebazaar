@@ -385,8 +385,8 @@ class DbClassProduct implements IDbClass {
 
 			while (rs.next()) {
 				String[] catalogs = new String[2];
-				catalogs[0] = rs.getString("catalogid");
-				catalogs[1] = rs.getString("catalogname");
+				catalogs[0] = rs.getString("catalogname");
+				catalogs[1] = rs.getString("catalogid");
 				catalogNames.add(catalogs);
 			}
 		} catch (SQLException e) {
