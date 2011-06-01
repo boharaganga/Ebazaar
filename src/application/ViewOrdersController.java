@@ -60,7 +60,7 @@ public enum ViewOrdersController implements CleanupControl {
 						.get(CustomerConstants.CUSTOMER);
 				ICustomerProfile customerProfile = customerSs
 						.getCustomerProfile();
-				IOrderSubsystem orderSs = new OrderSubsystemFacade(
+				OrderSubsystemFacade orderSs = new OrderSubsystemFacade(
 						customerProfile);
 
 				try {

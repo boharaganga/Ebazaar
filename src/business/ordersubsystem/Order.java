@@ -3,12 +3,14 @@
  */
 package business.ordersubsystem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import business.externalinterfaces.IAddress;
 import business.externalinterfaces.ICreditCard;
 import business.externalinterfaces.IOrder;
 import business.externalinterfaces.IOrderItem;
+import business.externalinterfaces.IOrderSubsystem;
 
 class Order implements IOrder {
 	private String orderId;
@@ -24,6 +26,7 @@ class Order implements IOrder {
 		this.orderId = orderId;
 		this.orderDate = orderDate;
 		this.totalPrice = totalPrice;
+		this.orderItems = new ArrayList<IOrderItem>();
 	}
 
 	public String getOrderId() {
