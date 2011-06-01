@@ -8,6 +8,7 @@ import middleware.DatabaseException;
 import middleware.EBazaarException;
 import business.RuleException;
 import business.externalinterfaces.IAddress;
+import business.externalinterfaces.ICreditCard;
 import business.externalinterfaces.ICustomerSubsystem;
 import business.externalinterfaces.IOrder;
 import business.externalinterfaces.IOrderSubsystem;
@@ -131,5 +132,19 @@ public class CustomerSubsystemFacade implements ICustomerSubsystem {
 	}
 
 	public static final long serialVersionUID = 805820108;
+
+	public IAddress getDefaultShipAddress() {
+		return defaultShipAddress;
+	}
+
+
+	public IAddress getDefaultBillAddress() {
+		return defaultBillAddress;
+	}
+
+
+	public ICreditCard getDefaultPaymentInfo() {
+		return defaultPaymentInfo;
+	}
 
 }

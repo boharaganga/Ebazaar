@@ -3,23 +3,14 @@ package application;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
 import middleware.DatabaseException;
-
-import business.externalinterfaces.IProductFromDb;
-import business.externalinterfaces.IProductFromGui;
-import business.externalinterfaces.IProductSubsystem;
-import business.productsubsystem.ProductSubsystemFacade;
-
 import application.gui.CartItemsWindow;
 import application.gui.CatalogListWindow;
-import application.gui.DefaultData;
 import application.gui.EbazaarMainFrame;
 import application.gui.MaintainCatalogTypes;
 import application.gui.MaintainProductCatalog;
@@ -27,6 +18,11 @@ import application.gui.ProductDetailsWindow;
 import application.gui.ProductListWindow;
 import application.gui.QuantityWindow;
 import application.gui.SelectOrderWindow;
+import business.externalinterfaces.IProductFromDb;
+import business.externalinterfaces.IProductSubsystem;
+import business.externalinterfaces.IShoppingCartSubsystem;
+import business.productsubsystem.ProductSubsystemFacade;
+import business.shoppingcartsubsystem.ShoppingCartSubsystemFacade;
 
 public enum BrowseAndSelectController implements CleanupControl {
 	// This makes BrowseAndSelectController a Singleton. Since controllers
@@ -186,6 +182,7 @@ public enum BrowseAndSelectController implements CleanupControl {
 	class SaveCartListener implements ActionListener {
 		public void actionPerformed(ActionEvent evt) {
 			// implement
+			IShoppingCartSubsystem shoppingcart=ShoppingCartSubsystemFacade.INSTANCE;
 		}
 	}
 
