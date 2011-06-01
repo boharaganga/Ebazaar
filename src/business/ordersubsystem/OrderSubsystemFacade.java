@@ -45,7 +45,9 @@ public class OrderSubsystemFacade implements IOrderSubsystem {
 		List<String> orderIds = getAllOrderIds();
 		List<IOrder> orders = new ArrayList<IOrder>();
 		for (String id : orderIds) {
-			orders.add(new DbClassOrder().getOrderData(id));
+			IOrder o = new DbClassOrder().getOrderData(id);
+			o.setOrderItems(getOrderItems(o.getOrderId()));
+			orders.add(o);
 		}
 		return orders;
 
