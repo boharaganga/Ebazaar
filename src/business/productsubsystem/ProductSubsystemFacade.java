@@ -92,4 +92,12 @@ public class ProductSubsystemFacade implements IProductSubsystem {
 	public TwoKeyHashMap<String,String,IProductFromDb> refreshProductTable() throws DatabaseException{
 		return (new DbClassProduct().refreshProductTable());
 	}
+	
+	public boolean deleteProduct(String productId) throws DatabaseException{
+		return (new DbClassProduct().deleteProduct(productId));
+	}
+	
+	public boolean deleteCatalog(String catalogName) throws DatabaseException {
+		return (new DbClassProduct().deleteCatalog(catalogName));
+	}
 }

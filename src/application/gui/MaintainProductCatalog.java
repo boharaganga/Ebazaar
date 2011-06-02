@@ -12,6 +12,7 @@ import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -192,8 +193,7 @@ public class MaintainProductCatalog extends JWindow implements ParentWindow, ICo
 		try {
 		 catalogs = psf.getCatalogNames();
 		} catch (DatabaseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, "", "Sorry, the catalog could not be listed", JOptionPane.INFORMATION_MESSAGE);
 		}
 		for(String[] s:catalogs){
 			catalogTypeCombo.addItem(s[0]);
@@ -261,24 +261,24 @@ public class MaintainProductCatalog extends JWindow implements ParentWindow, ICo
 	 * the controller class.
 	 */
 	private void updateModel() {
-		List<String[]> theData = new ArrayList<String[]>();
-		ProductSubsystemFacade psf = new ProductSubsystemFacade();
-		List<IProductFromDb> productList = new ArrayList<IProductFromDb>();
-		try {
-			productList = psf.getProductList("Books");
-			for(IProductFromDb idb:productList){
-				String[] str = {idb.getProductName(),idb.getUnitPrice(),idb.getMfgDate(),idb.getQuantityAvail()};
-				theData.add(str);
-			}
-		} catch (DatabaseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        if(USE_DEFAULT_DATA) {
-			DefaultData dd = DefaultData.INSTANCE;
-			theData = dd.getProductCatalogChoices(catalogGroup);
-        }
-		updateModel(theData);
+//		List<String[]> theData = new ArrayList<String[]>();
+//		ProductSubsystemFacade psf = new ProductSubsystemFacade();
+//		List<IProductFromDb> productList = new ArrayList<IProductFromDb>();
+//		try {
+//			productList = psf.getProductList("Books");
+//			for(IProductFromDb idb:productList){
+//				String[] str = {idb.getProductName(),idb.getUnitPrice(),idb.getMfgDate(),idb.getQuantityAvail()};
+//				theData.add(str);
+//			}
+//		} catch (DatabaseException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//        if(USE_DEFAULT_DATA) {
+//			DefaultData dd = DefaultData.INSTANCE;
+//			theData = dd.getProductCatalogChoices(catalogGroup);
+//        }
+//		updateModel(theData);
  	}	
 	
     private void updateTable() {
