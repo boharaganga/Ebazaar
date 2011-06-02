@@ -22,8 +22,10 @@ import application.gui.TermsWindow;
 import business.ParseException;
 import business.RuleException;
 import business.SessionContext;
+import business.customersubsystem.CustomerSubsystemFacade;
 import business.externalinterfaces.CustomerConstants;
 import business.externalinterfaces.IAddress;
+import business.externalinterfaces.ICreditCard;
 import business.externalinterfaces.ICustomerProfile;
 import business.externalinterfaces.ICustomerSubsystem;
 import business.externalinterfaces.IProductFromGui;
@@ -81,7 +83,11 @@ public enum CheckoutController implements CleanupControl {
 			ICustomerSubsystem customer = (ICustomerSubsystem) context
 					.get(CustomerConstants.CUSTOMER);
 			ICustomerProfile customerProfile = customer.getCustomerProfile();
-			// TODO-rajesh
+			IAddress defaultShipAddress = customer.getDefaultShipAddress();
+			IAddress defaultBillAddress = customer.getDefaultBillAddress();
+			/*
+			 * Get default shipping and billing address here
+			 */
 
 			shippingBillingWindow = new ShippingBillingWindow();
 
@@ -92,11 +98,25 @@ public enum CheckoutController implements CleanupControl {
 			 * " "+custProfile.getLastName(), defaultShipAddress.getStreet1(),
 			 * defaultShipAddress.getCity(), defaultShipAddress.getState(),
 			 * defaultShipAddress.getZip());
-			 * shippingBillingWindow.setBillingAddress(custName.getFirstName() +
-			 * " "+custName.getLastName(), defaultBillAddress.getStreet1(),
+			 * shippingBillingWindow.setBillingAddress (custName.getFirstName()
+			 * + " "+custName.getLastName(), defaultBillAddress.getStreet1(),
 			 * defaultBillAddress.getCity(), defaultBillAddress.getState(),
 			 * defaultBillAddress.getZip());
 			 */
+
+			shippingBillingWindow.setShippingAddress(
+					customerProfile.getFirstName() + " "
+							+ customerProfile.getLastName(),
+					defaultShipAddress.getStreet1(),
+					defaultShipAddress.getCity(),
+					defaultShipAddress.getState(), defaultShipAddress.getZip());
+			shippingBillingWindow.setBillingAddress(
+					customerProfile.getFirstName() + " "
+							+ customerProfile.getLastName(),
+					defaultBillAddress.getStreet1(),
+					defaultBillAddress.getCity(),
+					defaultBillAddress.getState(), defaultBillAddress.getZip());
+
 			shippingBillingWindow.setVisible(true);
 
 		}
@@ -112,7 +132,6 @@ public enum CheckoutController implements CleanupControl {
 				loginControl.startLogin();
 			} else {
 				populateScreen();
-
 			}
 
 		}
@@ -169,53 +188,63 @@ public enum CheckoutController implements CleanupControl {
 				IAddress addr = cust.createAddress(addrFlds[0], addrFlds[1],
 						addrFlds[2], addrFlds[3]);
 
-				try {
-					cleansedAddr = cust.runAddressRules(addr);
-					cust.saveNewAddress(cleansedAddr);
-				} catch (RuleException e) {
-					rulesOk = false;
-					System.out.println(e.getMessage());
-					JOptionPane.showMessageDialog(shipAddressesWindow,
-							e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-					shippingBillingWindow.setVisible(true);
-				} catch (EBazaarException e) {
-					rulesOk = false;
-					JOptionPane
-							.showMessageDialog(
-									shipAddressesWindow,
-									"An error has occurred that prevents further processing",
-									"Error", JOptionPane.ERROR_MESSAGE);
-					shippingBillingWindow.setVisible(true);
-				}
-
-				if (rulesOk) {
-					// do updates
-					shippingBillingWindow.setAddressFields(new String[] {
-							cleansedAddr.getStreet1(), cleansedAddr.getCity(),
-							cleansedAddr.getState(), cleansedAddr.getZip() });
-
-				}
+				// try {
+				// cleansedAddr = cust.runAddressRules(addr);
+				// cust.saveNewAddress(cleansedAddr);
+				// } catch (RuleException e) {
+				// rulesOk = false;
+				// System.out.println(e.getMessage());
+				// JOptionPane.showMessageDialog(shipAddressesWindow,
+				// e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				// shippingBillingWindow.setVisible(true);
+				// } catch (EBazaarException e) {
+				// rulesOk = false;
+				// JOptionPane
+				// .showMessageDialog(
+				// shipAddressesWindow,
+				// "An error has occurred that prevents further processing",
+				// "Error", JOptionPane.ERROR_MESSAGE);
+				// shippingBillingWindow.setVisible(true);
+				// }
+				//
+				// if (rulesOk) {
+				// // do updates
+				// shippingBillingWindow.setAddressFields(new String[] {
+				// cleansedAddr.getStreet1(), cleansedAddr.getCity(),
+				// cleansedAddr.getState(), cleansedAddr.getZip() });
+				//
+				// }
 			}
 			// load into shopping cart and set up payment window
-			if (rulesOk) {
+			// if (rulesOk) {
 
-				// load addresses into shopping cart
-				String[] s = shippingBillingWindow.getShipAddressFields();
-				String[] b = shippingBillingWindow.getBillAddressFields();
-				IAddress shipAddr = cust.createAddress(s[0], s[1], s[2], s[3]);
-				IAddress billAddr = cust.createAddress(b[0], b[1], b[2], b[3]);
-				// cust.setBillingAddressInCart(billAddr);
-				// cust.setShippingAddressInCart(shipAddr);
+			// load addresses into shopping cart
+			String[] s = shippingBillingWindow.getShipAddressFields();
+			String[] b = shippingBillingWindow.getBillAddressFields();
+			IAddress shipAddr = cust.createAddress(s[0], s[1], s[2], s[3]);
+			IAddress billAddr = cust.createAddress(b[0], b[1], b[2], b[3]);
+			// cust.setBillingAddressInCart(billAddr);
+			// cust.setShippingAddressInCart(shipAddr);
 
-				setupPaymentWindow();
-			}
+			setupPaymentWindow();
+			// }
 		}
 
 		void setupPaymentWindow() {
 			// get default payment info from customer object
 			// ICreditCard cc = cust.getDefaultPaymentInfo();
 			// String[] ccAsArray = CustomerUtil.creditCardToStringArray(cc);
-			String[] ccAsArray = new String[] { "name", "num", "type", "expir" };
+			SessionContext context = SessionContext.INSTANCE;
+
+			// ICustomerSubsystem cust = (ICustomerSubsystem)
+			// SessionContext.INSTANCE
+			// .get(CustomerConstants.CUSTOMER);
+			ICustomerSubsystem cust = (ICustomerSubsystem) context
+					.get(CustomerConstants.CUSTOMER);
+			ICreditCard cc = cust.getDefaultPaymentInfo();
+			String[] ccAsArray = CustomerUtil.creditCardToStringArray(cc);
+			// String[] ccAsArray = new String[] { "name1", "num", "type",
+			// "expir" };
 			paymentWindow = new PaymentWindow();
 			paymentWindow.setCredCardFields(ccAsArray[0], ccAsArray[1],
 					ccAsArray[2], ccAsArray[3]);
@@ -244,19 +273,30 @@ public enum CheckoutController implements CleanupControl {
 			if (selectedRow >= 0) {
 				shipAddressesWindow.setVisible(false);
 				SessionContext context = SessionContext.INSTANCE;
+				ICustomerSubsystem ss = (ICustomerSubsystem) context
+						.get(CustomerConstants.CUSTOMER);
 				// get cust name from customer subsystem -- for now we use fake
 				// data
-				String name = "Joe Smith";
+
+				String name = ss.getCustomerProfile().getFirstName() + " "
+						+ ss.getCustomerProfile().getLastName();
+				IAddress defaultBillAddress = ss.getDefaultBillAddress();
 				if (shippingBillingWindow != null) {
+//					shippingBillingWindow.setShippingAddress(name,
+//							(String) model.getValueAt(selectedRow,
+//									DefaultData.STREET_INT), (String) model
+//									.getValueAt(selectedRow,
+//											DefaultData.CITY_INT),
+//							(String) model.getValueAt(selectedRow,
+//									DefaultData.STATE_INT), (String) model
+//									.getValueAt(selectedRow,
+//											DefaultData.ZIP_INT));
 					shippingBillingWindow.setShippingAddress(name,
-							(String) model.getValueAt(selectedRow,
-									DefaultData.STREET_INT), (String) model
-									.getValueAt(selectedRow,
-											DefaultData.CITY_INT),
-							(String) model.getValueAt(selectedRow,
-									DefaultData.STATE_INT), (String) model
-									.getValueAt(selectedRow,
-											DefaultData.ZIP_INT));
+							defaultBillAddress.getStreet1() + " "
+									+ defaultBillAddress.getStreet2(),
+							defaultBillAddress.getCity(),
+							defaultBillAddress.getState(),
+							defaultBillAddress.getZip());
 					shippingBillingWindow.setVisible(true);
 				}
 
@@ -286,24 +326,24 @@ public enum CheckoutController implements CleanupControl {
 			paymentWindow.setVisible(false);
 
 			// check rules
-			if (false) {
-				// display error message
-			}
+			// if (false) {
+			// display error message
+			// }
 			// rules passed, proceed
-			else {
-				// create a credit card instance and set in shopping cart
-				termsWindow = new TermsWindow();
-				try {
-					String termsText = extractTermsText();
-					termsWindow.setTermsText(termsText);
-					termsWindow.setVisible(true);
+			// else {
+			// create a credit card instance and set in shopping cart
+			termsWindow = new TermsWindow();
+			try {
+				String termsText = extractTermsText();
+				termsWindow.setTermsText(termsText);
+				termsWindow.setVisible(true);
 
-				} catch (ParseException e) {
-					displayError(paymentWindow, e.getMessage());
-					(new ApplicationCleanup()).cleanup();
-					System.exit(0);
-				}
+			} catch (ParseException e) {
+				displayError(paymentWindow, e.getMessage());
+				(new ApplicationCleanup()).cleanup();
+				System.exit(0);
 			}
+			// }
 
 		}
 	}
