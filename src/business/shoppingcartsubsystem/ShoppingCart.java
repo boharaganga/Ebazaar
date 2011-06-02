@@ -27,10 +27,10 @@ public class ShoppingCart implements IShoppingCart {
 			this.cartItems = new LinkedList<ICartItem>();
 		else
 			this.cartItems = cartItems;
-		SessionContext context = SessionContext.INSTANCE;
-		ICustomerSubsystem custSs = (ICustomerSubsystem) context
-				.get(CustomerConstants.CUSTOMER);
-		updateCustomerInfo(custSs);
+//		SessionContext context = SessionContext.INSTANCE;
+//		ICustomerSubsystem custSs = (ICustomerSubsystem) context
+//				.get(CustomerConstants.CUSTOMER);
+//		updateCustomerInfo(custSs);
 	}
 
 	// public ShoppingCart(String customerId, List<ICartItem> cartItems) {
@@ -46,19 +46,17 @@ public class ShoppingCart implements IShoppingCart {
 		return customerId;
 	}
 
-	public void setCustomerId(String customerId) throws DatabaseException {
+	public void setCustomerId(String customerId) {
 		this.customerId = customerId;
-		ICustomerSubsystem css = new CustomerSubsystemFacade();
-		css.initializeCustomer(customerId);
-		updateCustomerInfo(css);
 	}
 
-	private void updateCustomerInfo(ICustomerSubsystem css) {
-		this.shippingAddress = css.getDefaultShipAddress();
-		this.billingAddress = css.getDefaultBillAddress();
-		this.paymentInfo = css.getDefaultPaymentInfo();
-
-	}
+//	private void updateCustomerInfo(ICustomerSubsystem css) {
+//		this.customerId = css.getCustomerProfile().getCustId();
+//		this.shippingAddress = css.getDefaultShipAddress();
+//		this.billingAddress = css.getDefaultBillAddress();
+//		this.paymentInfo = css.getDefaultPaymentInfo();
+//
+//	}
 
 	public List<ICartItem> getCartItems() {
 		return cartItems;
