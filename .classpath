@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="/home/ashish/EclipseWorkspace/Ebazaar/resources/external_jars/mysql-connector-java-5.1.16-bin.jar"/>
 	<classpathentry kind="lib" path="/home/ashish/EclipseWorkspace/Ebazaar/resources/external_jars/rulesencoding.jar"/>
 	<classpathentry kind="lib" path="/home/ashish/EclipseWorkspace/Ebazaar/resources/external_jars/rulesengine.jar"/>
+	<classpathentry kind="lib" path="/home/ashish/EclipseWorkspace/Ebazaar/resources/external_jars/log4j-1.2.16.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
