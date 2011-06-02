@@ -7,6 +7,7 @@ import java.util.List;
 
 import middleware.DatabaseException;
 import middleware.DbConfigProperties;
+import middleware.EBazaarException;
 import middleware.dataaccess.DataAccessSubsystemFacade;
 import middleware.dataaccess.DataAccessUtil;
 import middleware.externalinterfaces.DbConfigKey;
@@ -49,52 +50,67 @@ public class DbClassShoppingCart implements IDbClass {
 	private void buildSaveLiveCartQuery() {
 		// implement
 		// for shipping address
-		IAddress sadr = cart.getShippingAddress();
-		String shipingAddress1 = sadr.getStreet1();
-		String shppingAddress2 = sadr.getStreet2();
-		String shippingCity = sadr.getCity();
-		String shippingState = sadr.getState();
-		String shippingZip = sadr.getZip();
-
-		// for billing address
-		IAddress badr = cart.getBillingAddress();
-		String billingAddress1 = badr.getStreet1();
-		String billingAddress2 = badr.getStreet2();
-		String billingCity = badr.getCity();
-		String billingState = badr.getState();
-		String billingZip = badr.getZip();
-
-		// calculating prices
-		double totalPriceAmount = 0;
-
-		for (ICartItem cit : cart.getCartItems()) {
-			String tp = cit.getTotalprice();
-			double tpp = Double.parseDouble(tp);
-			totalPriceAmount += tpp;
-		}
+		// IAddress sadr = cart.getShippingAddress();
+		//
+		// String shipingAddress1 = null;
+		// String shppingAddress2 = null;
+		// String shippingCity = null;
+		// String shippingState = null;
+		// String shippingZip = null;
+		// shipingAddress1 = sadr.getStreet1();
+		// shppingAddress2 = sadr.getStreet2();
+		// shippingCity = sadr.getCity();
+		// shippingState = sadr.getState();
+		// shippingZip = sadr.getZip();
+		//
+		// // for billing address
+		// IAddress badr = cart.getBillingAddress();
+		// String billingAddress1 = null;
+		// String billingAddress2 = null;
+		// String billingCity = null;
+		// String billingState = null;
+		// String billingZip = null;
+		// billingAddress1 = badr.getStreet1();
+		// billingAddress2 = badr.getStreet2();
+		// billingCity = badr.getCity();
+		// billingState = badr.getState();
+		// billingZip = badr.getZip();
+		//
+		// // calculating prices
+		// double totalPriceAmount = 0;
+		//
+		// for (ICartItem cit : cart.getCartItems()) {
+		// String tp = cit.getTotalprice();
+		// double tpp = Double.parseDouble(tp);
+		// totalPriceAmount += tpp;
+		// }
 
 		// }
 
-		
-		query = "INSERT INTO ShopCartTbl VALUES(" + cartId + "," + custId + ","
-				+ shipingAddress1 + "," + shppingAddress2 + "," + shippingCity
-				+ "," + shippingState + "," + shippingZip + ","
-				+ billingAddress1 + "," + billingAddress2 + "," + billingCity
-				+ "," + billingState + "," + billingZip + "," + null + ","
-				+ null + "," + null + "," + null + "," + totalPriceAmount + ","
-				+ 0.0 + "," + 0.0 + "," + totalPriceAmount + ") ";
+		try {
+			cartId = ShoppingCartSubsystemFacade.INSTANCE.getShoppingCartId();
+			if (cartId == null) {
+				cartId = DataAccessUtil.getNextAvailShopCartId();
+			}
+		} catch (DatabaseException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+
+		custId = cart.getCustomerId();
+		query = "REPLACE INTO ShopCartTbl " + "SET shopcartid = " + cartId
+				+ ", custid = " + custId + ";";
+
 	}
 
 	private void buildGetIdQuery() {
-		query = "SELECT shopcartid FROM ShopCartTbl WHERE custid = '" + custId
-				+ "';";
+		query = "SELECT shopcartid FROM ShopCartTbl WHERE custid = " + custId
+				+ ";";
 	}
 
 	private void buildGetSavedItemsQuery() {
 		// implement
 		query = "SELECT cartitemid, productid, quantity, totalprice "
-				+ "FROM ShopCartItem " + "where shopcartid='" + cartId
-				+ "';";
+				+ "FROM ShopCartItem " + "where shopcartid=" + cartId + ";";
 
 	}
 
@@ -108,6 +124,9 @@ public class DbClassShoppingCart implements IDbClass {
 
 	public void saveCart() throws DatabaseException {
 		// implement
+		if (cartId == null) {
+			cartId = DataAccessUtil.getNextAvailShopCartId();
+		}
 		this.queryType = SAVE_LIVE_CART;
 		DataAccessSubsystemFacade.INSTANCE.save(this);
 	}

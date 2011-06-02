@@ -6,10 +6,13 @@ import java.util.logging.Logger;
 
 import middleware.DatabaseException;
 import middleware.dataaccess.DataAccessSubsystemFacade;
+import business.SessionContext;
+import business.externalinterfaces.CustomerConstants;
 import business.externalinterfaces.IAddress;
 import business.externalinterfaces.ICartItem;
 import business.externalinterfaces.ICreditCard;
 import business.externalinterfaces.ICustomerProfile;
+import business.externalinterfaces.ICustomerSubsystem;
 import business.externalinterfaces.IProductFromDb;
 import business.externalinterfaces.IProductSubsystem;
 import business.externalinterfaces.IShoppingCart;
@@ -30,11 +33,12 @@ public enum ShoppingCartSubsystemFacade implements IShoppingCartSubsystem {
 	String shopCartId;
 	ICustomerProfile customerProfile;
 	Logger log = Logger.getLogger(this.getClass().getPackage().getName());
-		
 
 	// interface methods
 	public void setCustomerProfile(ICustomerProfile customerProfile) {
 		this.customerProfile = customerProfile;
+		liveCart.setCustomerId(customerProfile.getCustId());
+		
 	}
 
 	// supporting methods
@@ -44,7 +48,7 @@ public enum ShoppingCartSubsystemFacade implements IShoppingCartSubsystem {
 		// so that the sql query can extract custId in order to
 		// find this customer's shopping cart id
 		// finished
-return new DbClassShoppingCart().getShoppingCartId(customerProfile
+		return new DbClassShoppingCart().getShoppingCartId(customerProfile
 				.getCustId());
 		// return "1";
 
@@ -64,6 +68,7 @@ return new DbClassShoppingCart().getShoppingCartId(customerProfile
 	private ShoppingCartSubsystemFacade() {
 		liveCart = new ShoppingCart(new ArrayList<ICartItem>());
 		savedCart = new ShoppingCart(new ArrayList<ICartItem>());
+
 	}
 
 	@Override
@@ -112,8 +117,7 @@ return new DbClassShoppingCart().getShoppingCartId(customerProfile
 
 	@Override
 	public void setPaymentInfo(ICreditCard cc) {
-		throw new UnsupportedOperationException(
-				"Credit Card payment system not yet implemented.");
+		liveCart.setPaymentInfo(cc);
 	}
 
 	@Override
@@ -130,7 +134,8 @@ return new DbClassShoppingCart().getShoppingCartId(customerProfile
 	@Override
 	public void saveLiveCart() throws DatabaseException {
 		DbClassShoppingCart sc = new DbClassShoppingCart(liveCart);
+		sc.saveCart();
 		// TODO save sc
 	}
-	
+
 }

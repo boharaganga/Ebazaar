@@ -13,9 +13,12 @@ import javax.swing.JTable;
 
 import middleware.DatabaseException;
 
+import business.SessionContext;
 import business.customersubsystem.CustomerSubsystemFacade;
+import business.externalinterfaces.CustomerConstants;
 import business.externalinterfaces.ICartItem;
 import business.externalinterfaces.ICustomerProfile;
+import business.externalinterfaces.ICustomerSubsystem;
 import business.externalinterfaces.IProductFromDb;
 import business.externalinterfaces.IProductFromGui;
 import business.externalinterfaces.IProductSubsystem;
@@ -249,6 +252,12 @@ public enum BrowseAndSelectController implements CleanupControl {
 		public void actionPerformed(ActionEvent evt) {
 			// implement
 			IShoppingCartSubsystem shoppingCart = ShoppingCartSubsystemFacade.INSTANCE;
+//			SessionContext context = SessionContext.INSTANCE;
+//			ICustomerSubsystem custSs = (ICustomerSubsystem) context
+//					.get(CustomerConstants.CUSTOMER);
+//			shoppingCart.setShippingAddress(custSs.getDefaultShipAddress());
+//			shoppingCart.setBillingAddress(custSs.getDefaultBillAddress());
+//			shoppingCart.setPaymentInfo(custSs.getDefaultPaymentInfo());
 			try {
 				shoppingCart.saveLiveCart();
 				JOptionPane.showMessageDialog(productListWindow,

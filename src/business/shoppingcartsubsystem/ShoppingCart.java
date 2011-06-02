@@ -3,9 +3,15 @@ package business.shoppingcartsubsystem;
 import java.util.LinkedList;
 import java.util.List;
 
+import middleware.DatabaseException;
+
+import business.SessionContext;
+import business.customersubsystem.CustomerSubsystemFacade;
+import business.externalinterfaces.CustomerConstants;
 import business.externalinterfaces.IAddress;
 import business.externalinterfaces.ICartItem;
 import business.externalinterfaces.ICreditCard;
+import business.externalinterfaces.ICustomerSubsystem;
 import business.externalinterfaces.IShoppingCart;
 
 public class ShoppingCart implements IShoppingCart {
@@ -21,13 +27,17 @@ public class ShoppingCart implements IShoppingCart {
 			this.cartItems = new LinkedList<ICartItem>();
 		else
 			this.cartItems = cartItems;
+//		SessionContext context = SessionContext.INSTANCE;
+//		ICustomerSubsystem custSs = (ICustomerSubsystem) context
+//				.get(CustomerConstants.CUSTOMER);
+//		updateCustomerInfo(custSs);
 	}
-	
-	public ShoppingCart(String customerId, List<ICartItem> cartItems) {
-		this(cartItems);
-		this.customerId = customerId;
-	}
-	
+
+	// public ShoppingCart(String customerId, List<ICartItem> cartItems) {
+	// this(cartItems);
+	// this.customerId = customerId;
+	// }
+
 	public void add(ICartItem cartItem) {
 		this.cartItems.add(cartItem);
 	}
@@ -39,6 +49,14 @@ public class ShoppingCart implements IShoppingCart {
 	public void setCustomerId(String customerId) {
 		this.customerId = customerId;
 	}
+
+//	private void updateCustomerInfo(ICustomerSubsystem css) {
+//		this.customerId = css.getCustomerProfile().getCustId();
+//		this.shippingAddress = css.getDefaultShipAddress();
+//		this.billingAddress = css.getDefaultBillAddress();
+//		this.paymentInfo = css.getDefaultPaymentInfo();
+//
+//	}
 
 	public List<ICartItem> getCartItems() {
 		return cartItems;
@@ -71,7 +89,5 @@ public class ShoppingCart implements IShoppingCart {
 	public void setPaymentInfo(ICreditCard creditCard) {
 		this.paymentInfo = creditCard;
 	}
-	
-	
 
 }

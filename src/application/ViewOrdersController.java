@@ -5,12 +5,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
 import middleware.DatabaseException;
 
+import application.BrowseAndSelectController.SelectProductListener;
 import application.gui.CustomTableModel;
 import application.gui.EbazaarMainFrame;
 import application.gui.SelectOrderWindow;
@@ -43,6 +45,8 @@ public enum ViewOrdersController implements CleanupControl {
 	class ViewOrderDetailsListener implements ActionListener {
 		final String ERROR_MESSAGE = "Please select a row.";
 		final String ERROR = "Error";
+		private Logger log = Logger.getLogger(ViewOrderDetailsListener.class
+				.getName());
 
 		public void actionPerformed(ActionEvent evt) {
 			JTable table = selectOrderWindow.getTable();
@@ -92,6 +96,7 @@ public enum ViewOrdersController implements CleanupControl {
 					viewOrderDetailsWindow.updateModel(orderItemsAsString);
 					viewOrderDetailsWindow.setVisible(true);
 				} catch (DatabaseException e) {
+					log.warning(e.getMessage());
 					JOptionPane.showMessageDialog(selectOrderWindow,
 							"Database connection error", ERROR,
 							JOptionPane.ERROR_MESSAGE);
@@ -127,6 +132,9 @@ public enum ViewOrdersController implements CleanupControl {
 
 		final String ERROR_MESSAGE = "Problem connecting to database to fetch orders.";
 		final String ERROR = "Error";
+		private Logger log = Logger.getLogger(ViewOrderDetailsListener.class
+				.getName());
+
 
 		/*
 		 * this method is called when LoginControl needs this class to load
@@ -153,6 +161,7 @@ public enum ViewOrdersController implements CleanupControl {
 					selectOrderWindow.updateModel(modelDataList);
 
 				} catch (DatabaseException e) {
+					log.warning(e.getMessage());
 					JOptionPane.showMessageDialog(selectOrderWindow,
 							ERROR_MESSAGE, ERROR, JOptionPane.ERROR_MESSAGE);
 				}
