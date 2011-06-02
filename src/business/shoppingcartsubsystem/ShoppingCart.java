@@ -3,9 +3,15 @@ package business.shoppingcartsubsystem;
 import java.util.LinkedList;
 import java.util.List;
 
+import middleware.DatabaseException;
+
+import business.SessionContext;
+import business.customersubsystem.CustomerSubsystemFacade;
+import business.externalinterfaces.CustomerConstants;
 import business.externalinterfaces.IAddress;
 import business.externalinterfaces.ICartItem;
 import business.externalinterfaces.ICreditCard;
+import business.externalinterfaces.ICustomerSubsystem;
 import business.externalinterfaces.IShoppingCart;
 
 public class ShoppingCart implements IShoppingCart {
@@ -21,13 +27,17 @@ public class ShoppingCart implements IShoppingCart {
 			this.cartItems = new LinkedList<ICartItem>();
 		else
 			this.cartItems = cartItems;
+		SessionContext context = SessionContext.INSTANCE;
+		ICustomerSubsystem custSs = (ICustomerSubsystem) context
+				.get(CustomerConstants.CUSTOMER);
+		updateCustomerInfo(custSs);
 	}
-	
-	public ShoppingCart(String customerId, List<ICartItem> cartItems) {
-		this(cartItems);
-		this.customerId = customerId;
-	}
-	
+
+	// public ShoppingCart(String customerId, List<ICartItem> cartItems) {
+	// this(cartItems);
+	// this.customerId = customerId;
+	// }
+
 	public void add(ICartItem cartItem) {
 		this.cartItems.add(cartItem);
 	}
@@ -36,8 +46,18 @@ public class ShoppingCart implements IShoppingCart {
 		return customerId;
 	}
 
-	public void setCustomerId(String customerId) {
+	public void setCustomerId(String customerId) throws DatabaseException {
 		this.customerId = customerId;
+		ICustomerSubsystem css = new CustomerSubsystemFacade();
+		css.initializeCustomer(customerId);
+		updateCustomerInfo(css);
+	}
+
+	private void updateCustomerInfo(ICustomerSubsystem css) {
+		this.shippingAddress = css.getDefaultShipAddress();
+		this.billingAddress = css.getDefaultBillAddress();
+		this.paymentInfo = css.getDefaultPaymentInfo();
+
 	}
 
 	public List<ICartItem> getCartItems() {
@@ -71,7 +91,5 @@ public class ShoppingCart implements IShoppingCart {
 	public void setPaymentInfo(ICreditCard creditCard) {
 		this.paymentInfo = creditCard;
 	}
-	
-	
 
 }

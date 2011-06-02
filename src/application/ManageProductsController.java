@@ -280,6 +280,7 @@ public enum ManageProductsController implements CleanupControl  {
 	// control AddEditCatalog
 	class SaveAddEditCatListener implements ActionListener {
         public void actionPerformed(ActionEvent evt) {
+        	System.out.println(addEditCatalog.getAddOrEdit());
         	String name = addEditCatalog.getProductNameField().getText();
         	
    	//TODO get the product ID from the event
@@ -460,7 +461,12 @@ public enum ManageProductsController implements CleanupControl  {
     public void setAddEditProduct(AddEditProduct w){
         addEditProduct = w;
     } 
-    public void setMainFrame(EbazaarMainFrame f){
+    
+    public AddEditProduct getAddEditProduct() {
+		return addEditProduct;
+	}
+
+	public void setMainFrame(EbazaarMainFrame f){
         mainFrame = f;
     }    
     

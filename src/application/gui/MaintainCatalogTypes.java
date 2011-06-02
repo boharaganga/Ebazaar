@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Window;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -12,6 +13,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+
+import middleware.DatabaseException;
+
+import business.productsubsystem.ProductSubsystemFacade;
 
 import application.GuiUtil;
 import application.ManageProductsController;
@@ -173,12 +178,19 @@ public class MaintainCatalogTypes extends javax.swing.JWindow implements ParentW
 	
 
 	private void updateModel() {
-
+		List<String[]> theData = new ArrayList<String[]>();
+		ProductSubsystemFacade psf = new ProductSubsystemFacade();
+		try {
+			theData = psf.getCatalogNames();
+		} catch (DatabaseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         if(USE_DEFAULT_DATA) {			        	
 			List<String[]> defaultData = DefaultData.getCatalogTypes();
 			updateModel(defaultData);
         }
-
+        updateModel(theData);
 	}	
 
 	

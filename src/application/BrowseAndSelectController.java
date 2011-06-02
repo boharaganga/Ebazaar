@@ -3,6 +3,7 @@ package application;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
@@ -12,11 +13,17 @@ import javax.swing.JTable;
 
 import middleware.DatabaseException;
 
+import business.customersubsystem.CustomerSubsystemFacade;
+import business.externalinterfaces.ICartItem;
+import business.externalinterfaces.ICustomerProfile;
 import business.externalinterfaces.IProductFromDb;
 import business.externalinterfaces.IProductFromGui;
 import business.externalinterfaces.IProductSubsystem;
+import business.externalinterfaces.IShoppingCartSubsystem;
 import business.productsubsystem.ProductSubsystemFacade;
+import business.shoppingcartsubsystem.ShoppingCartSubsystemFacade;
 
+import application.gui.AddEditProduct;
 import application.gui.CartItemsWindow;
 import application.gui.CatalogListWindow;
 import application.gui.DefaultData;
@@ -140,23 +147,74 @@ public enum BrowseAndSelectController implements CleanupControl {
 
 	// ///// control ProductDetails
 	class AddToCartListener implements ActionListener {
+		private ProductDetailsWindow w;
+
+		public AddToCartListener(ProductDetailsWindow w) {
+			this.w = w;
+		}
+
 		public void actionPerformed(ActionEvent evt) {
 			productDetailsWindow.setVisible(false);
-			quantityWindow = new QuantityWindow();
+			quantityWindow = new QuantityWindow(w);
 			quantityWindow.setVisible(true);
 			quantityWindow.setParentWindow(productDetailsWindow);
 
 		}
 	}
 
+	// -----------------------------Updated by Ashish--From
+	// here--------------------------------
 	class QuantityOkListener implements ActionListener {
+		private String quantity;
+		private String productName;
+		private double price;
+
+		public QuantityOkListener(String productName, String quantity,
+				double price) {
+			this.productName = productName;
+			this.quantity = quantity;
+			this.price = price;
+		}
+
+		CartItemsWindow cartWindow = new CartItemsWindow();
+
 		public void actionPerformed(ActionEvent evt) {
 			quantityWindow.setVisible(false);
-			CartItemsWindow cartWindow = new CartItemsWindow();
+
+			doUpdate();
 			cartWindow.setVisible(true);
 
 		}
+
+		private void doUpdate() {
+			ShoppingCartSubsystemFacade shop = ShoppingCartSubsystemFacade.INSTANCE;
+			try {
+				shop.addCartItem(productName, quantity,
+						String.valueOf(price * Integer.parseInt(quantity)));
+				List<ICartItem> cartItems = shop.getLiveCartItems();
+				IProductSubsystem prodsub = new ProductSubsystemFacade();
+				List<String[]> theData = new ArrayList<String[]>();
+				for (ICartItem ict : cartItems) {
+					String pid = ict.getProductid();
+					String productName = prodsub.getProductFromId(pid)
+							.getProductName();
+					String unitPrice = prodsub.getProductFromId(pid)
+							.getUnitPrice();
+					String[] str = { productName, ict.getQuantity(), unitPrice,
+							ict.getTotalprice() };
+					theData.add(str);
+				}
+				cartWindow.updateModel(theData);
+			} catch (DatabaseException e) {
+				String errMsg = "Could not add item to cart.";
+				JOptionPane.showMessageDialog(productListWindow, errMsg,
+						"Error", JOptionPane.ERROR_MESSAGE);
+			}
+		}
 	}
+
+	// -----------------------------Updated by Ashish--Upto
+	// here--------------------------------
 
 	class BackToProductListListener implements ActionListener {
 		public void actionPerformed(ActionEvent evt) {
@@ -184,8 +242,24 @@ public enum BrowseAndSelectController implements CleanupControl {
 	}
 
 	class SaveCartListener implements ActionListener {
+		SaveCartListener() {
+
+		}
+
 		public void actionPerformed(ActionEvent evt) {
 			// implement
+			IShoppingCartSubsystem shoppingCart = ShoppingCartSubsystemFacade.INSTANCE;
+			try {
+				shoppingCart.saveLiveCart();
+				JOptionPane.showMessageDialog(productListWindow,
+						"Save shopping cart sucessfully.", "Infor",
+						JOptionPane.INFORMATION_MESSAGE);
+			} catch (DatabaseException e) {
+				String errMsg = "Could not save shopping cart to database.";
+				JOptionPane.showMessageDialog(productListWindow, errMsg,
+						"Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
 		}
 	}
 
@@ -223,7 +297,7 @@ public enum BrowseAndSelectController implements CleanupControl {
 
 	// ProductDetails Window
 	public ActionListener getAddToCartListener(ProductDetailsWindow w) {
-		return new AddToCartListener();
+		return new AddToCartListener(w);
 	}
 
 	public ActionListener getBackToProductListListener(ProductDetailsWindow w) {
@@ -240,8 +314,9 @@ public enum BrowseAndSelectController implements CleanupControl {
 		return (new SaveCartListener());
 	}
 
-	public ActionListener getQuantityOkListener(QuantityWindow w) {
-		return new QuantityOkListener();
+	public ActionListener getQuantityOkListener(QuantityWindow w,
+			String productName, String quantity, double price) {
+		return new QuantityOkListener(productName, quantity, price);
 	}
 
 	// ////// PUBLIC ACCESSORS to register screens controlled by this class////

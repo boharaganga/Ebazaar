@@ -2,9 +2,9 @@
 package business.externalinterfaces;
 import java.util.List;
 
-import business.RuleException;
 import middleware.DatabaseException;
 import middleware.EBazaarException;
+import business.RuleException;
 
 public interface ICustomerSubsystem {
     public void initializeCustomer(String id) throws DatabaseException;
@@ -14,5 +14,7 @@ public interface ICustomerSubsystem {
     public List<IOrder> getOrderHistory();
     public IAddress runAddressRules(IAddress addr) throws RuleException, EBazaarException; 
     public ICustomerProfile getCustomerProfile();
-
+    public IAddress getDefaultShipAddress() ;
+	public IAddress getDefaultBillAddress();
+	public ICreditCard getDefaultPaymentInfo();
 }

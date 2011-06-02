@@ -130,6 +130,7 @@ return new DbClassShoppingCart().getShoppingCartId(customerProfile
 	@Override
 	public void saveLiveCart() throws DatabaseException {
 		DbClassShoppingCart sc = new DbClassShoppingCart(liveCart);
+		sc.saveCart();
 		// TODO save sc
 	}
 	
