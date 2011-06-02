@@ -217,6 +217,9 @@ public class ProductDetailsWindow extends JWindow implements ParentWindow {
 	}
 	
 	
+	public double getPrice() {
+		return price;
+	}
 	public static void main(String[] args) {
 		String[] params = {"Pants","20.00","5","The best!"};
 		

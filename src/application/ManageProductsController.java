@@ -461,7 +461,12 @@ public enum ManageProductsController implements CleanupControl  {
     public void setAddEditProduct(AddEditProduct w){
         addEditProduct = w;
     } 
-    public void setMainFrame(EbazaarMainFrame f){
+    
+    public AddEditProduct getAddEditProduct() {
+		return addEditProduct;
+	}
+
+	public void setMainFrame(EbazaarMainFrame f){
         mainFrame = f;
     }    
     
