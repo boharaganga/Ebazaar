@@ -40,6 +40,10 @@ class DbClassProduct implements IDbClass {
 	private final String SAVE_CAT_TABLE = "SaveCatTable";
 	private final String GET_CAT_NAMES = "GetCatNames";
 	private final String GET_CAT_ID_FROM_NAME = "GetIdFromName";
+	private final String DELETE_PRODUCT = "DeleteProduct";
+	private final String DELETE_PRODUCT_WITH_CATALOGID = "DeleteProductWithCatalogId";
+	private final String DELETE_CATALOG = "DeleteCatalog";
+	private final String dELETE_CATALOG_NAME = "DeleteCatName";
 	private int productId;
 	private String catalogId;
 	private String catalogType;
@@ -105,9 +109,33 @@ class DbClassProduct implements IDbClass {
 		if (queryType.equals(GET_CAT_ID_FROM_NAME)) {
 			buildGetCatIdFromNameQuery();
 		}
+		
+		if (queryType.equals(DELETE_PRODUCT)) {
+			buildDeleteProductQuery();
+		}
+		
+		if (queryType.equals(DELETE_CATALOG)) {
+			buildDeleteCatalogQuery();
+		}
 
+		if(queryType.equals(DELETE_PRODUCT_WITH_CATALOGID)) {
+			buildDeleteProductWithCatalogIdQuery();
+		}
 	}
-    private void buildGetCatIdFromNameQuery(){
+	
+    private void buildDeleteProductWithCatalogIdQuery() {
+		query = "DELETE  from Product WHERE catalogid = '"+catalogId+ "'";	
+	}
+
+	private void buildDeleteCatalogQuery() {
+		query = "DELETE from CatalogType WHERE catalogname = '"+catalogName+ "'";
+	}
+
+	private void buildDeleteProductQuery() {
+		query = "DELETE FROM Product WHERE productname = '"+ productName + "'"; 
+	}
+
+	private void buildGetCatIdFromNameQuery(){
     	query = "SELECT * FROM CatalogType WHERE catalogname = '"+catalogName+"'";
     }
 	
@@ -143,6 +171,57 @@ class DbClassProduct implements IDbClass {
 	private void buildProdIdFromNameQuery() {
 		query = "SELECT * from Product where productname = '"
 				+ this.productNameToSearch + "'";
+	}
+	
+	
+	
+	public void deleteProductFromCatalogId(String catalogId) throws DatabaseException{
+		queryType = DELETE_PRODUCT_WITH_CATALOGID;
+		dataAccess = DataAccessSubsystemFacade.INSTANCE;
+		this.catalogId = catalogId;
+		dataAccess.delete(this);
+	}
+	
+    /**
+     * 
+     * @param catalogName
+     * @return
+     */
+	public boolean deleteCatalog(String catalogName) throws DatabaseException {
+		
+		dataAccess = DataAccessSubsystemFacade.INSTANCE;
+		this.catalogName = catalogName;
+		
+		// get all the products related with catalogs and delete first
+		getCatalogIdFromCatalogName(catalogName);
+		
+		// Also delete all the products with the catalog ID
+		deleteProductFromCatalogId(this.catalogId);
+		deleteCatalogFromName(this.catalogName);
+		return true;
+	}
+
+	
+	private void deleteCatalogFromName(String catalogName) throws DatabaseException {
+		queryType = DELETE_CATALOG;
+		this.catalogName = catalogName;
+		dataAccess = DataAccessSubsystemFacade.INSTANCE;
+		dataAccess.delete(this);
+		
+	}
+
+	/**
+	 * 
+	 * @param productName
+	 * @return
+	 * @throws DatabaseException
+	 */
+	public boolean deleteProduct(String productName) throws DatabaseException{
+		queryType = DELETE_PRODUCT;
+		dataAccess = DataAccessSubsystemFacade.INSTANCE;
+		this.productName = productName;
+		dataAccess.delete(this);
+		return true;
 	}
 
 	/**
@@ -517,5 +596,7 @@ class DbClassProduct implements IDbClass {
 
 		return query;
 	}
+
+	
 
 }

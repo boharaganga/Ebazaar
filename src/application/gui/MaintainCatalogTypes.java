@@ -183,7 +183,6 @@ public class MaintainCatalogTypes extends javax.swing.JWindow implements ParentW
 		try {
 			theData = psf.getCatalogNames();
 		} catch (DatabaseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
         if(USE_DEFAULT_DATA) {			        	
