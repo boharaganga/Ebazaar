@@ -51,7 +51,7 @@ public class DataAccessUtil {
 	   								"FROM Customer ";
     final static String addressQuery =  "SELECT DISTINCT addressid "+
 		"FROM altshipaddress ";
-    final static String shopCartQuery  = "SELECT DISTINCT cartid "+
+    final static String shopCartQuery  = "SELECT DISTINCT shopcartid "+
 	   									"FROM ShopCartTbl ";
     final static String cartItemQuery =  "SELECT DISTINCT cartitemid "+
 											"FROM ShopCartItem ";
@@ -125,7 +125,7 @@ public class DataAccessUtil {
         return getNextAvailAccountId(addressQuery,"addressid");
     }
     public static String getNextAvailShopCartId() throws DatabaseException{
-        return getNextAvailAccountId(shopCartQuery,"cartid");
+        return getNextAvailAccountId(shopCartQuery,"shopcartid");
         
     }
     public static void main(String[] args){

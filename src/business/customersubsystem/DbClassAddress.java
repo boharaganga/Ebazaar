@@ -98,7 +98,7 @@ class DbClassAddress implements IDbClass {
     }
     void buildSaveNewAddrQuery() throws DatabaseException {
     	String addressid = DataAccessUtil.getNextAvailAddressId();
-        query = "INSERT into altshipaddress "+
+        query = "INSERT into AltShipAddress "+
         		"(addressid, custid,street,city,state,zip) " +
         		"VALUES('"+addressid+"','" +customerProfile.getCustId()+"','"+
         				  address.getStreet1()+"','"+
@@ -107,7 +107,7 @@ class DbClassAddress implements IDbClass {
         				  address.getZip()+"')";
     }
     void buildReadAllAddressesQuery() {
-        query = "SELECT * from altshipaddress";
+        query = "SELECT * from AltShipAddress";
     }
     void buildReadDefaultBillQuery() {
         query = "SELECT billaddress1, billaddress2, billcity, billstate, billzipcode "+

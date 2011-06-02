@@ -120,19 +120,19 @@ class DbClassOrder implements IDbClass {
 	}
 
 	private void buildGetOrderDataQuery() {
-		query = "SELECT orderdate, totalpriceamount FROM Ord WHERE orderid = '"
-				+ orderId + "'";
+		query = "SELECT orderdate, totalpriceamount FROM Ord WHERE orderid = "
+				+ orderId + "";
 
 	}
 
 	private void buildGetOrderIdsQuery() {
-		query = "SELECT orderid FROM Ord WHERE custid = '"
-				+ customerProfile.getCustId() + "'";
+		query = "SELECT orderid FROM Ord WHERE custid = "
+				+ customerProfile.getCustId() + "";
 
 	}
 
 	private void buildGetOrderItemsQuery() {
-		query = "SELECT * FROM OrderItem WHERE orderid = '" + orderId + "'";
+		query = "SELECT * FROM OrderItem WHERE orderid = " + orderId + "";
 
 	}
 

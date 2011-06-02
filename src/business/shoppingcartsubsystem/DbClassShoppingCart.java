@@ -7,6 +7,7 @@ import java.util.List;
 
 import middleware.DatabaseException;
 import middleware.DbConfigProperties;
+import middleware.EBazaarException;
 import middleware.dataaccess.DataAccessSubsystemFacade;
 import middleware.dataaccess.DataAccessUtil;
 import middleware.externalinterfaces.DbConfigKey;
@@ -86,44 +87,30 @@ public class DbClassShoppingCart implements IDbClass {
 
 		// }
 
-//		try {
-//			cartId = ShoppingCartSubsystemFacade.INSTANCE.getShoppingCartId();
-//			if (cartId == null) {
-//				cartId = DataAccessUtil.getNextAvailShopCartId();
-//			}
-//		} catch (DatabaseException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
-		custId = cart.getCustomerId();
+		try {
+			cartId = ShoppingCartSubsystemFacade.INSTANCE.getShoppingCartId();
+			if (cartId == null) {
+				cartId = DataAccessUtil.getNextAvailShopCartId();
+			}
+		} catch (DatabaseException e) {
+			throw new RuntimeException(e.getMessage());
+		}
 
-		// query = "INSERT INTO ShopCartTbl VALUES(" + cartId + "," + custId +
-		// ","
-		// + shipingAddress1 + "," + shppingAddress2 + "," + shippingCity
-		// + "," + shippingState + "," + shippingZip + ","
-		// + billingAddress1 + "," + billingAddress2 + "," + billingCity
-		// + "," + billingState + "," + billingZip + "," + null + ","
-		// + null + "," + null + "," + null + "," + totalPriceAmount + ","
-		// + 0.0 + "," + 0.0 + "," + totalPriceAmount + ") ";
-		//
-		query = "INSERT INTO ShopCartTbl VALUES(" + cartId + " , " + custId + " , "
-				+ null + " , " + null + " , " + null + " , " + null + " , " + null
-				+ " , " + null + " , " + null + " , " + null + " , " + null + " , "
-				+ null + " , " + null + " , " + null + " , " + null + " , " + null
-				+ " , " + null + " , " + null + " , " + null + " , " + null + ") ";
+		custId = cart.getCustomerId();
+		query = "REPLACE INTO ShopCartTbl " + "SET shopcartid = " + cartId
+				+ ", custid = " + custId + ";";
 
 	}
 
 	private void buildGetIdQuery() {
-		query = "SELECT shopcartid FROM ShopCartTbl WHERE custid = '" + custId
-				+ "';";
+		query = "SELECT shopcartid FROM ShopCartTbl WHERE custid = " + custId
+				+ ";";
 	}
 
 	private void buildGetSavedItemsQuery() {
 		// implement
 		query = "SELECT cartitemid, productid, quantity, totalprice "
-				+ "FROM ShopCartItem " + "where shopcartid='" + cartId + "';";
+				+ "FROM ShopCartItem " + "where shopcartid=" + cartId + ";";
 
 	}
 

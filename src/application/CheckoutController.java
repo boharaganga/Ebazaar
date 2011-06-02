@@ -46,9 +46,9 @@ public enum CheckoutController implements CleanupControl {
 	INSTANCE;
 	Logger log = Logger.getLogger(this.getClass().getPackage().getName());
 	private final String TERMS_MESSAGE_FILE = CustomerConstants.CURR_DIR
-			+ "\\resources\\terms.txt";
+			+ "/resources/terms.txt";
 	private final String GOODBYE_FILE = CustomerConstants.CURR_DIR
-			+ "\\resources\\goodbye.txt";
+			+ "/resources/goodbye.txt";
 
 	String extractGoodbyeMessage() throws ParseException {
 		return StringParse.extractTextFromFile(GOODBYE_FILE);
