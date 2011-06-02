@@ -27,11 +27,14 @@ public class QuantityWindow extends JDialog {
     private final String OK_BUTN = "OK";
     private final String CANCEL_BUTN = "Cancel";
     private JTextField quantityField;
- 
+    private String item;
+    private double price;
     //JPanels
     JPanel mainPanel;
     JPanel upper, middle, lower;
-    public QuantityWindow() {
+    public QuantityWindow(ProductDetailsWindow w) {
+    	this.item=w.getItem();
+    	price=w.getPrice();
         control = BrowseAndSelectController.INSTANCE;
         control.setQuantityWindow(this);
 		handleWindowClosing();
@@ -106,7 +109,7 @@ public class QuantityWindow extends JDialog {
     public void defineLowerPanel(){
         //proceed button
         JButton okButton = new JButton(OK_BUTN);
-        okButton.addActionListener(control.getQuantityOkListener(this));
+        okButton.addActionListener(control.getQuantityOkListener(this,item,quantityField.getText(),price));
         
         
         //back to cart button
@@ -143,7 +146,7 @@ public class QuantityWindow extends JDialog {
     }      
     public static void main(String[] args) {
         
-        (new QuantityWindow()).setVisible(true);
+        (new QuantityWindow(null)).setVisible(true);
     }       
 	private static final long serialVersionUID = 3618135641289078841L;
 

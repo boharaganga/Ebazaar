@@ -16,7 +16,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-
 import business.customersubsystem.CustomerSubsystemFacade;
 import business.externalinterfaces.IProductSubsystem;
 import business.productsubsystem.ProductSubsystemFacade;
@@ -194,52 +193,47 @@ public class CatalogListWindow extends javax.swing.JWindow implements
 	 * updateModel(List) should be called by the controller class.
 	 */
 	private void updateModel() {
-		
-		//TODO send either catList or theData. Communicate with the browse and select subsystem!
+
+		// TODO send either catList or theData. Communicate with the browse and
+		// select subsystem!
 		/*
-		 * Reverse logic applied here as patch, To show the name of the catalogs instead of ID's
+		 * Reverse logic applied here as patch, To show the name of the catalogs
+		 * instead of ID's
 		 */
 		ProductSubsystemFacade psf = new ProductSubsystemFacade();
 		List<String[]> catList = null;
 		List<String[]> theData = new ArrayList<String[]>();
 
 		try {
-		 catList = psf.getCatalogNames();
-		 for (String[] str:catList){
-			 String id = str[0];
-			 String name = str[1];
-			 String[] data = {name,id};
-			 theData.add(data);
-		 }
-		} catch (DatabaseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        if(USE_DEFAULT_DATA) {
-			theData = DefaultData.getCatalogTypes();
-        }
-		updateModel(catList);
- 	}
-	
-   /*		if (USE_DEFAULT_DATA) {
-			theData = DefaultData.getCatalogTypes();
-		} else {
-			IProductSubsystem facade = new ProductSubsystemFacade();
-			try {
-				List<String[]> temps = facade.getCatalogNames();
-				for (String[] temp : temps) {
-					theData.add(new String[] { temp[1] });
-				}
-			} catch (DatabaseException e) {
-				JOptionPane.showMessageDialog(this,
-						"Unable to retrieve catalog name", "Error",
-						JOptionPane.ERROR_MESSAGE);
-				logger.warning(e.getMessage());
-				return;
+			catList = psf.getCatalogNames();
+			for (String[] str : catList) {
+				String id = str[0];
+				String name = str[1];
+				String[] data = { name, id };
+				theData.add(data);
 			}
+		} catch (DatabaseException e) {
+			JOptionPane.showMessageDialog(this,
+					"Unable to retrieve catalog name", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			logger.warning(e.getMessage());
+			return;
 		}
-		updateModel(theData);
-	} */
+		if (USE_DEFAULT_DATA) {
+			theData = DefaultData.getCatalogTypes();
+		}
+		updateModel(catList);
+	}
+
+	/*
+	 * if (USE_DEFAULT_DATA) { theData = DefaultData.getCatalogTypes(); } else {
+	 * IProductSubsystem facade = new ProductSubsystemFacade(); try {
+	 * List<String[]> temps = facade.getCatalogNames(); for (String[] temp :
+	 * temps) { theData.add(new String[] { temp[1] }); } } catch
+	 * (DatabaseException e) { JOptionPane.showMessageDialog(this,
+	 * "Unable to retrieve catalog name", "Error", JOptionPane.ERROR_MESSAGE);
+	 * logger.warning(e.getMessage()); return; } } updateModel(theData); }
+	 */
 
 	private void updateTable() {
 

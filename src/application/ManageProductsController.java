@@ -441,104 +441,101 @@ public enum ManageProductsController implements CleanupControl {
 	}
 
 	// MaintainCatalogTypes
-	public ActionListener getAddCatalogListener(MaintainCatalogTypes w) {
-		return (new AddCatalogListener());
+
+    public ActionListener getAddCatalogListener(MaintainCatalogTypes w){
+        return (new AddCatalogListener());
+    }     
+    
+    public ActionListener getEditCatalogListener(MaintainCatalogTypes w){
+        return (new EditCatalogListener());
+    } 
+    
+    public ActionListener getDeleteCatalogListener(MaintainCatalogTypes w){
+        return (new DeleteCatalogListener());
+    } 
+    
+    public ActionListener getBackToMainListener(MaintainCatalogTypes w){
+        return (new BackToMainListener());
+    } 
+    
+    // MaintainProductCatalog
+    public ActionListener getAddProductListener(MaintainProductCatalog w){
+        return (new AddProductListener());
+    } 
+    public ActionListener getEditProductListener(MaintainProductCatalog w){
+        return (new EditProductListener());
+    } 
+    public ActionListener getDeleteProductListener(MaintainProductCatalog w){
+        return (new DeleteProductListener());
+    } 
+    public ActionListener getSearchProductListener(MaintainProductCatalog w){
+        return (new SearchProductListener());
+    } 
+    public ActionListener getBackToMainFromProdsListener(MaintainProductCatalog w){
+        return (new BackToMainFromProdsListener());
+    }     
+    
+    // AddEditCatalog
+    public ActionListener getSaveAddEditCatListener(AddEditCatalog w){
+        return (new SaveAddEditCatListener());
+    } 
+    public ActionListener getBackFromAddEditCatListener(AddEditCatalog w){
+        return (new BackFromAddEditCatListener());
+    }  
+    public Action getComboAction(Window w){
+        if(comboAction==null) {
+        	comboAction = new ComboAction();
+        }
+        return comboAction;
+    }
+    
+    // AddEditProduct
+    public ActionListener getSaveAddEditProductListener(AddEditProduct w){
+        return (new SaveAddEditProductListener());
+    } 
+    public ActionListener getBackFromAddEditProductListener(AddEditProduct w){
+        return (new BackFromAddEditProductListener());
+    }          
+    
+    ////////  PUBLIC ACCESSORS to register screens controlled by this class////    
+    public void setMaintainCatalogTypes(MaintainCatalogTypes w){
+        maintainCatalogTypes = w;
+    }     
+    public void setMaintainProductCatalog(MaintainProductCatalog w){
+        maintainProductCatalog = w;
+    }  
+    public void setAddEditCatalog(AddEditCatalog w){
+        addEditCatalog = w;
+    }  
+    public void setAddEditProduct(AddEditProduct w){
+        addEditProduct = w;
+    } 
+    
+    public AddEditProduct getAddEditProduct() {
+		return addEditProduct;
 	}
 
-	public ActionListener getEditCatalogListener(MaintainCatalogTypes w) {
-		return (new EditCatalogListener());
-	}
-
-	public ActionListener getDeleteCatalogListener(MaintainCatalogTypes w) {
-		return (new DeleteCatalogListener());
-	}
-
-	public ActionListener getBackToMainListener(MaintainCatalogTypes w) {
-		return (new BackToMainListener());
-	}
-
-	// MaintainProductCatalog
-	public ActionListener getAddProductListener(MaintainProductCatalog w) {
-		return (new AddProductListener());
-	}
-
-	public ActionListener getEditProductListener(MaintainProductCatalog w) {
-		return (new EditProductListener());
-	}
-
-	public ActionListener getDeleteProductListener(MaintainProductCatalog w) {
-		return (new DeleteProductListener());
-	}
-
-	public ActionListener getSearchProductListener(MaintainProductCatalog w) {
-		return (new SearchProductListener());
-	}
-
-	public ActionListener getBackToMainFromProdsListener(
-			MaintainProductCatalog w) {
-		return (new BackToMainFromProdsListener());
-	}
-
-	// AddEditCatalog
-	public ActionListener getSaveAddEditCatListener(AddEditCatalog w) {
-		return (new SaveAddEditCatListener());
-	}
-
-	public ActionListener getBackFromAddEditCatListener(AddEditCatalog w) {
-		return (new BackFromAddEditCatListener());
-	}
-
-	public Action getComboAction(Window w) {
-		if (comboAction == null) {
-			comboAction = new ComboAction();
-		}
-		return comboAction;
-	}
-
-	// AddEditProduct
-	public ActionListener getSaveAddEditProductListener(AddEditProduct w) {
-		return (new SaveAddEditProductListener());
-	}
-
-	public ActionListener getBackFromAddEditProductListener(AddEditProduct w) {
-		return (new BackFromAddEditProductListener());
-	}
-
-	// ////// PUBLIC ACCESSORS to register screens controlled by this class////
-	public void setMaintainCatalogTypes(MaintainCatalogTypes w) {
-		maintainCatalogTypes = w;
-	}
-
-	public void setMaintainProductCatalog(MaintainProductCatalog w) {
-		maintainProductCatalog = w;
-	}
-
-	public void setAddEditCatalog(AddEditCatalog w) {
-		addEditCatalog = w;
-	}
-
-	public void setAddEditProduct(AddEditProduct w) {
-		addEditProduct = w;
-	}
-
-	public void setMainFrame(EbazaarMainFrame f) {
-		mainFrame = f;
-	}
-
-	// ///// screens -- private references
-	private MaintainCatalogTypes maintainCatalogTypes;
-	private MaintainProductCatalog maintainProductCatalog;
-	private AddEditCatalog addEditCatalog;
-	private AddEditProduct addEditProduct;
-	private EbazaarMainFrame mainFrame;
-	private Window[] allWindows = { maintainCatalogTypes,
-			maintainProductCatalog, addEditCatalog, addEditProduct, mainFrame };
-
-	public void cleanUp() {
-		for (Window w : allWindows) {
-			if (w != null) {
-				System.out.println("Disposing of window "
-						+ w.getClass().getName());
+	public void setMainFrame(EbazaarMainFrame f){
+        mainFrame = f;
+    }    
+    
+    /////// screens -- private references
+    private MaintainCatalogTypes maintainCatalogTypes;
+    private MaintainProductCatalog maintainProductCatalog;
+    private AddEditCatalog addEditCatalog;
+    private AddEditProduct addEditProduct;
+    private EbazaarMainFrame mainFrame;
+	private Window[] allWindows = {
+			maintainCatalogTypes,
+			maintainProductCatalog,
+			addEditCatalog,
+			addEditProduct,
+			mainFrame
+	};
+	public void cleanUp(){
+		for(Window w : allWindows){
+			if(w != null){
+				System.out.println("Disposing of window "+w.getClass().getName());
 				w.dispose();
 			}
 		}

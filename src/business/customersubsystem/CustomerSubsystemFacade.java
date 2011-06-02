@@ -30,6 +30,7 @@ public class CustomerSubsystemFacade implements ICustomerSubsystem {
 	CustomerProfile customerProfile;
 
 	public void initializeCustomer(String id) throws DatabaseException {
+		logger.info("Customer id is "+id);
 		loadCustomerProfile(id);
 
 		loadDefaultShipAddress();
