@@ -3,9 +3,13 @@ package application;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -34,6 +38,20 @@ public enum ManageProductsController implements CleanupControl {
 	// need to be singletons. This style for implementing the Singleton
 	// pattern is explained in Effective Java, 2nd ed.
 	INSTANCE;
+
+	Logger log = Logger.getLogger("log_file");
+
+	private ManageProductsController() {
+		FileHandler handler = null;
+		try {
+			handler = new FileHandler("products.log", true);
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		log.addHandler(handler);
+	}
 
 	// a singleton instance
 	static ComboAction comboAction = null;
@@ -88,20 +106,23 @@ public enum ManageProductsController implements CleanupControl {
 			if (selectedRow >= 0) {
 				// Students: code goes here.
 				CustomTableModel model = maintainCatalogTypes.getModel();
-				String catalogName = (String)model.getValueAt(selectedRow, 0);
+				String catalogName = (String) model.getValueAt(selectedRow, 0);
 				ProductSubsystemFacade psf = new ProductSubsystemFacade();
-				
+
 				try {
 					psf.deleteCatalog(catalogName);
+					log.info("Catalog "+catalogName+ " and related products are deleted.");
+					JOptionPane.showMessageDialog(maintainCatalogTypes,
+							catalogName + " and related products are deleted", "Information",
+							JOptionPane.INFORMATION_MESSAGE);
 				} catch (DatabaseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.severe("Catalog "+catalogName+ " could not be deleted." );
+					JOptionPane.showMessageDialog(maintainCatalogTypes,
+							catalogName + " could not be deleted.", "Information",
+							JOptionPane.INFORMATION_MESSAGE);
 				}
+
 				
-				
-				JOptionPane.showMessageDialog(maintainCatalogTypes,
-						catalogName, "Information",
-						JOptionPane.INFORMATION_MESSAGE);
 
 			} else {
 				JOptionPane.showMessageDialog(maintainCatalogTypes,
@@ -276,23 +297,28 @@ public enum ManageProductsController implements CleanupControl {
 			JTable table = maintainProductCatalog.getTable();
 			int selectedRow = table.getSelectedRow();
 			if (selectedRow >= 0) {
-				
+
 				CustomTableModel model = maintainProductCatalog.getModel();
-				String productName = (String)model.getValueAt(selectedRow, 0);
-				
+				String productName = (String) model.getValueAt(selectedRow, 0);
+
 				ProductSubsystemFacade psf = new ProductSubsystemFacade();
 				try {
 					psf.deleteProduct(productName);
-					JOptionPane.showMessageDialog(maintainProductCatalog,
-							productName+ " successfully deleted.", "Information",
-							JOptionPane.INFORMATION_MESSAGE);
 					
-				} catch (DatabaseException e) {
+					log.info(productName+ " successfully deleted.");
+					
 					JOptionPane.showMessageDialog(maintainProductCatalog,
-							productName+ " cannot be deleted.", "Information",
+							productName + " successfully deleted.",
+							"Information", JOptionPane.INFORMATION_MESSAGE);
+
+				} catch (DatabaseException e) {
+					
+					log.severe(productName+ " could not be deleted.");
+					
+					JOptionPane.showMessageDialog(maintainProductCatalog,
+							productName + " cannot be deleted.", "Information",
 							JOptionPane.INFORMATION_MESSAGE);
 				}
-				
 
 			} else {
 				JOptionPane.showMessageDialog(maintainProductCatalog,
@@ -326,7 +352,9 @@ public enum ManageProductsController implements CleanupControl {
 			ProductSubsystemFacade psf = new ProductSubsystemFacade();
 			try {
 				psf.saveNewCatalogName(name);
+				log.info("Catalog "+ name + " saved in the database.");
 			} catch (DatabaseException e) {
+				log.severe("Catalog "+name+ "could not be saved in the database.");
 				JOptionPane.showMessageDialog(addEditProduct, "",
 						"Sorry, the Catalog could not be added.",
 						JOptionPane.INFORMATION_MESSAGE);
@@ -365,12 +393,16 @@ public enum ManageProductsController implements CleanupControl {
 					quantity, unitPrice);
 			try {
 				psf.saveNewProduct(p, catalogType);
-				JOptionPane.showMessageDialog(addEditProduct, "The product has been successfully added",
-						"Information",
-						JOptionPane.INFORMATION_MESSAGE);
+				
+				log.info("Product "+productName+ " has been added.");
+				JOptionPane.showMessageDialog(addEditProduct,
+						"The product has been successfully added",
+						"Information", JOptionPane.INFORMATION_MESSAGE);
 			} catch (DatabaseException e) {
-				JOptionPane.showMessageDialog(addEditProduct, "Sorry, the product could not be added",
-						"Error",
+				
+				log.severe("Product "+productName+ " could not be saved in the database");
+				JOptionPane.showMessageDialog(addEditProduct,
+						"Sorry, the product could not be added", "Error",
 						JOptionPane.INFORMATION_MESSAGE);
 			}
 
@@ -442,100 +474,108 @@ public enum ManageProductsController implements CleanupControl {
 
 	// MaintainCatalogTypes
 
-    public ActionListener getAddCatalogListener(MaintainCatalogTypes w){
-        return (new AddCatalogListener());
-    }     
-    
-    public ActionListener getEditCatalogListener(MaintainCatalogTypes w){
-        return (new EditCatalogListener());
-    } 
-    
-    public ActionListener getDeleteCatalogListener(MaintainCatalogTypes w){
-        return (new DeleteCatalogListener());
-    } 
-    
-    public ActionListener getBackToMainListener(MaintainCatalogTypes w){
-        return (new BackToMainListener());
-    } 
-    
-    // MaintainProductCatalog
-    public ActionListener getAddProductListener(MaintainProductCatalog w){
-        return (new AddProductListener());
-    } 
-    public ActionListener getEditProductListener(MaintainProductCatalog w){
-        return (new EditProductListener());
-    } 
-    public ActionListener getDeleteProductListener(MaintainProductCatalog w){
-        return (new DeleteProductListener());
-    } 
-    public ActionListener getSearchProductListener(MaintainProductCatalog w){
-        return (new SearchProductListener());
-    } 
-    public ActionListener getBackToMainFromProdsListener(MaintainProductCatalog w){
-        return (new BackToMainFromProdsListener());
-    }     
-    
-    // AddEditCatalog
-    public ActionListener getSaveAddEditCatListener(AddEditCatalog w){
-        return (new SaveAddEditCatListener());
-    } 
-    public ActionListener getBackFromAddEditCatListener(AddEditCatalog w){
-        return (new BackFromAddEditCatListener());
-    }  
-    public Action getComboAction(Window w){
-        if(comboAction==null) {
-        	comboAction = new ComboAction();
-        }
-        return comboAction;
-    }
-    
-    // AddEditProduct
-    public ActionListener getSaveAddEditProductListener(AddEditProduct w){
-        return (new SaveAddEditProductListener());
-    } 
-    public ActionListener getBackFromAddEditProductListener(AddEditProduct w){
-        return (new BackFromAddEditProductListener());
-    }          
-    
-    ////////  PUBLIC ACCESSORS to register screens controlled by this class////    
-    public void setMaintainCatalogTypes(MaintainCatalogTypes w){
-        maintainCatalogTypes = w;
-    }     
-    public void setMaintainProductCatalog(MaintainProductCatalog w){
-        maintainProductCatalog = w;
-    }  
-    public void setAddEditCatalog(AddEditCatalog w){
-        addEditCatalog = w;
-    }  
-    public void setAddEditProduct(AddEditProduct w){
-        addEditProduct = w;
-    } 
-    
-    public AddEditProduct getAddEditProduct() {
+	public ActionListener getAddCatalogListener(MaintainCatalogTypes w) {
+		return (new AddCatalogListener());
+	}
+
+	public ActionListener getEditCatalogListener(MaintainCatalogTypes w) {
+		return (new EditCatalogListener());
+	}
+
+	public ActionListener getDeleteCatalogListener(MaintainCatalogTypes w) {
+		return (new DeleteCatalogListener());
+	}
+
+	public ActionListener getBackToMainListener(MaintainCatalogTypes w) {
+		return (new BackToMainListener());
+	}
+
+	// MaintainProductCatalog
+	public ActionListener getAddProductListener(MaintainProductCatalog w) {
+		return (new AddProductListener());
+	}
+
+	public ActionListener getEditProductListener(MaintainProductCatalog w) {
+		return (new EditProductListener());
+	}
+
+	public ActionListener getDeleteProductListener(MaintainProductCatalog w) {
+		return (new DeleteProductListener());
+	}
+
+	public ActionListener getSearchProductListener(MaintainProductCatalog w) {
+		return (new SearchProductListener());
+	}
+
+	public ActionListener getBackToMainFromProdsListener(
+			MaintainProductCatalog w) {
+		return (new BackToMainFromProdsListener());
+	}
+
+	// AddEditCatalog
+	public ActionListener getSaveAddEditCatListener(AddEditCatalog w) {
+		return (new SaveAddEditCatListener());
+	}
+
+	public ActionListener getBackFromAddEditCatListener(AddEditCatalog w) {
+		return (new BackFromAddEditCatListener());
+	}
+
+	public Action getComboAction(Window w) {
+		if (comboAction == null) {
+			comboAction = new ComboAction();
+		}
+		return comboAction;
+	}
+
+	// AddEditProduct
+	public ActionListener getSaveAddEditProductListener(AddEditProduct w) {
+		return (new SaveAddEditProductListener());
+	}
+
+	public ActionListener getBackFromAddEditProductListener(AddEditProduct w) {
+		return (new BackFromAddEditProductListener());
+	}
+
+	// ////// PUBLIC ACCESSORS to register screens controlled by this class////
+	public void setMaintainCatalogTypes(MaintainCatalogTypes w) {
+		maintainCatalogTypes = w;
+	}
+
+	public void setMaintainProductCatalog(MaintainProductCatalog w) {
+		maintainProductCatalog = w;
+	}
+
+	public void setAddEditCatalog(AddEditCatalog w) {
+		addEditCatalog = w;
+	}
+
+	public void setAddEditProduct(AddEditProduct w) {
+		addEditProduct = w;
+	}
+
+	public AddEditProduct getAddEditProduct() {
 		return addEditProduct;
 	}
 
-	public void setMainFrame(EbazaarMainFrame f){
-        mainFrame = f;
-    }    
-    
-    /////// screens -- private references
-    private MaintainCatalogTypes maintainCatalogTypes;
-    private MaintainProductCatalog maintainProductCatalog;
-    private AddEditCatalog addEditCatalog;
-    private AddEditProduct addEditProduct;
-    private EbazaarMainFrame mainFrame;
-	private Window[] allWindows = {
-			maintainCatalogTypes,
-			maintainProductCatalog,
-			addEditCatalog,
-			addEditProduct,
-			mainFrame
-	};
-	public void cleanUp(){
-		for(Window w : allWindows){
-			if(w != null){
-				System.out.println("Disposing of window "+w.getClass().getName());
+	public void setMainFrame(EbazaarMainFrame f) {
+		mainFrame = f;
+	}
+
+	// ///// screens -- private references
+	private MaintainCatalogTypes maintainCatalogTypes;
+	private MaintainProductCatalog maintainProductCatalog;
+	private AddEditCatalog addEditCatalog;
+	private AddEditProduct addEditProduct;
+	private EbazaarMainFrame mainFrame;
+	private Window[] allWindows = { maintainCatalogTypes,
+			maintainProductCatalog, addEditCatalog, addEditProduct, mainFrame };
+
+	public void cleanUp() {
+		for (Window w : allWindows) {
+			if (w != null) {
+				System.out.println("Disposing of window "
+						+ w.getClass().getName());
 				w.dispose();
 			}
 		}
