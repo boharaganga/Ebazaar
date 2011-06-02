@@ -100,13 +100,23 @@ class DbClassOrder implements IDbClass {
 		String billingState = billAddress.getState();
 		String billingZip = billAddress.getZip();
 
-		query = "INSERT INTO Ord VALUES(" + orderData.getOrderId() + ", "
-				+ customerProfile.getCustId() + ", " + shipingAddress1 + ", "
-				+ shppingAddress2 + ", " + shippingCity + ", " + shippingState
-				+ ", " + shippingZip + ", " + billingAddress1 + ", "
-				+ billingAddress2 + ", " + billingCity + ", " + billingState
-				+ ", " + billingZip + ");";
+//		query = "INSERT INTO Ord VALUES(" + orderData.getOrderId() + ", "
+//				+ customerProfile.getCustId() + ", " + shipingAddress1 + ", "
+//				+ shppingAddress2 + ", " + shippingCity + ", " + shippingState
+//				+ ", " + shippingZip + ", " + billingAddress1 + ", "
+//				+ billingAddress2 + ", " + billingCity + ", " + billingState
+//				+ ", " + billingZip
+//				+ ", null, null, null, null, null, null, null, "
+//				+ "null, null, null, null, null);";
 
+		query = "INSERT INTO Ord VALUES(" + orderData.getOrderId() + ", "
+		+ customerProfile.getCustId() + ", "
+		+ "null, null, null, null, null, null, null, "
+		+ "null, null, null, null, null, null, null, "
+		+ "null, null, null, null, null, null, null, "
+		+ "null);";
+//		System.out.println(query);
+		
 	}
 
 	private void buildGetOrderDataQuery() {
