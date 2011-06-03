@@ -16,7 +16,7 @@ import business.externalinterfaces.IProductFromGui;
 public class ProductSubsystemFacadeTest {
 
 	ProductSubsystemFacade psf;
-	private String catalogType = "Books";
+	private String catalogType = "Computer";
 	IProductFromGui ipg;
 	String catalogName = "phones";
 	String proName = "testProduct";
